@@ -9,8 +9,8 @@
 - 📧 Email: tejaspavithra2002@gmail.com
 - 💼 LinkedIn: [Tejas-Gowda](https://www.linkedin.com/in/tejasgowda-t-r)
 - 💻 GitHub: [Tejas1024](https://github.com/Tejas1024)
-- 🔗 Portfolio: [Tejas Portfolio](https://tejas-portfolio-link.com)
-- 💡 LeetCode: [Tejas LeetCode](https://leetcode.com/tejas)
+- 🔗 Portfolio: [Tejas Portfolio](https://kypaauui.manus.space/)
+- 💡 LeetCode: [Tejas LeetCode](https://leetcode.com/u/Tejas0312/)
 - 📱 Phone: +91 8296082806
 
 ---
@@ -188,4 +188,5 @@ I'm always open to discussing new opportunities, collaborations, or just chattin
 ---
 
 *Last Updated: February 2026*
+
 
