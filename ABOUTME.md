@@ -182,12 +182,13 @@ I wanted to demonstrate my ability to quickly ship production-ready applications
 I'm always open to discussing new opportunities, collaborations, or just chatting about technology. Feel free to reach out!
 
 - 📧 Email: tejaspavithra2002@gmail.com
-- 💼 LinkedIn: [Connect with me](https://linkedin.com/in/Tejas-Gowda)
+- 💼 LinkedIn: [Connect with me](https://www.linkedin.com/in/tejasgowda-t-r)
 - 💻 GitHub: [Follow my work](https://github.com/Tejas1024)
 
 ---
 
 *Last Updated: February 2026*
+
 
 
 
