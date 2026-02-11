@@ -83,7 +83,7 @@ Global Institute of Management Sciences
 ## 🚀 Featured Projects
 
 ### 1. Smart Expense Tracker with AI Insights
-[Live Demo](link) | [GitHub](https://github.com/Tejas1024)
+  | [GitHub](https://github.com/Tejas1024)
 
 Full-stack SaaS built with React dashboards, Django REST APIs, JWT authentication, and PostgreSQL-backed expense workflows, featuring AI/ML automation. Deployed on AWS EKS with Kubernetes orchestration, Helm IaC, and zero-downtime CI/CD (GitHub Actions + ArgoCD).
 
@@ -111,7 +111,7 @@ Built a production-grade 13-stage CI/CD pipeline using Jenkins with Maven build,
 ---
 
 ### 3. Personal AI Advisor
-[Live Demo](link) | [GitHub](https://github.com/Tejas1024)
+  | [GitHub](https://github.com/Tejas1024)
 
 Full-stack RAG-inspired AI platform with Python/Streamlit frontend, SQLite backend, multi-format document parser (PDF, DOCX, CSV), intelligent retrieval system with context-aware search, and Groq LLM integration.
 
@@ -188,5 +188,6 @@ I'm always open to discussing new opportunities, collaborations, or just chattin
 ---
 
 *Last Updated: February 2026*
+
 
 
