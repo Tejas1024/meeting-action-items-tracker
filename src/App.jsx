@@ -11,6 +11,7 @@ export default function App() {
   const [filter, setFilter] = useState('all');
   const [health, setHealth] = useState(null);
   const [error, setError] = useState('');
+  const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
     if (view === 'history') loadHistory();
@@ -197,149 +198,184 @@ export default function App() {
     return true;
   });
 
+  const bgClass = darkMode 
+    ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' 
+    : 'bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50';
+  
+  const cardClass = darkMode 
+    ? 'bg-gray-800/50 backdrop-blur-lg border border-purple-500/30' 
+    : 'bg-white/80 backdrop-blur-sm';
+  
+  const textClass = darkMode ? 'text-white' : 'text-gray-800';
+  const textMutedClass = darkMode ? 'text-gray-300' : 'text-gray-600';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-            📋 Meeting Action Items Tracker
-          </h1>
-          <p className="text-gray-600">AI-powered action item extraction from meeting transcripts</p>
+    <div className={`min-h-screen ${bgClass} p-4 md:p-8 transition-all duration-500`}>
+      <div className="max-w-6xl mx-auto">
+        {/* Header with Dark Mode Toggle */}
+        <div className={`${cardClass} rounded-2xl shadow-2xl p-6 mb-6 relative overflow-hidden`}>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className={`text-4xl md:text-5xl font-bold ${textClass} mb-2 flex items-center gap-3`}>
+                <span className="animate-pulse">🤖</span>
+                Meeting AI Tracker
+              </h1>
+              <p className={textMutedClass}>Powered by Gemini AI • Extract, Manage, Achieve</p>
+            </div>
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                darkMode 
+                  ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-300' 
+                  : 'bg-gray-800 text-white hover:bg-gray-700'
+              }`}
+            >
+              {darkMode ? '☀️ Light' : '🌙 Dark'}
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}
         <div className="flex flex-wrap gap-3 mb-6">
-          <button
-            onClick={() => { setView('home'); setError(''); }}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-              view === 'home'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-blue-50'
-            }`}
-          >
-            🏠 Home
-          </button>
-          <button
-            onClick={() => { setView('history'); setError(''); }}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-              view === 'history'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-blue-50'
-            }`}
-          >
-            📚 History
-          </button>
-          <button
-            onClick={() => { setView('status'); setError(''); }}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-              view === 'status'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-blue-50'
-            }`}
-          >
-            ❤️ Status
-          </button>
+          {['home', 'history', 'status'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => { setView(tab); setError(''); }}
+              className={`px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 ${
+                view === tab
+                  ? darkMode
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50'
+                    : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                  : darkMode
+                  ? 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50'
+                  : 'bg-white/50 text-gray-700 hover:bg-white'
+              }`}
+            >
+              {tab === 'home' && '🏠 Home'}
+              {tab === 'history' && '📚 History'}
+              {tab === 'status' && '💚 Status'}
+            </button>
+          ))}
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
+          <div className={`${darkMode ? 'bg-red-900/50 border-red-500' : 'bg-red-50 border-red-200'} border px-4 py-3 rounded-xl mb-6 backdrop-blur-sm`}>
+            <p className={darkMode ? 'text-red-200' : 'text-red-700'}>{error}</p>
           </div>
         )}
 
         {/* HOME VIEW */}
         {view === 'home' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Step 1: Paste Your Meeting Transcript</h2>
-            <p className="text-gray-600 mb-4">
-              Paste the text of your meeting notes below. Our AI will extract action items, owners, and due dates.
+          <div className={`${cardClass} rounded-2xl shadow-2xl p-8`}>
+            <h2 className={`text-3xl font-bold ${textClass} mb-4 flex items-center gap-2`}>
+              <span>✨</span> Paste Your Meeting Transcript
+            </h2>
+            <p className={`${textMutedClass} mb-6`}>
+              AI will automatically extract action items, assign owners, and detect due dates.
             </p>
             <textarea
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
-              className="w-full h-64 p-4 border-2 border-gray-300 rounded-lg mb-4 focus:border-blue-500 focus:outline-none font-mono text-sm"
-              placeholder="Example:&#10;&#10;Meeting Notes - Q1 Planning&#10;Date: Feb 11, 2026&#10;&#10;Sarah: We need to finalize the budget by next Friday.&#10;John: I'll send the proposal to everyone by tomorrow.&#10;Mike: Can someone review the API docs? Blocking my work.&#10;Sarah: I'll review it by Wednesday..."
+              className={`w-full h-80 p-6 ${
+                darkMode 
+                  ? 'bg-gray-900/50 border-purple-500/30 text-white placeholder-gray-500' 
+                  : 'bg-white border-gray-300 text-gray-800'
+              } border-2 rounded-xl focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 font-mono text-sm transition-all`}
+              placeholder="Example:&#10;&#10;Sprint Planning - Feb 12, 2026&#10;&#10;Rahul: We need to finalize authentication by Monday.&#10;Tejas: I'll fix refresh token logic by tomorrow evening.&#10;Ananya: Frontend ready, waiting on API docs.&#10;Rahul: Tejas, update Swagger docs once auth is done."
             />
             <button
               onClick={handleExtract}
               disabled={loading || !transcript.trim()}
-              className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all"
+              className={`mt-6 w-full md:w-auto px-10 py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-105 disabled:transform-none ${
+                loading || !transcript.trim()
+                  ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                  : darkMode
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/50'
+                  : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-lg'
+              }`}
             >
-              {loading ? '⏳ Extracting...' : '🚀 Extract Action Items'}
+              {loading ? '⏳ Extracting with AI...' : '🚀 Extract Action Items'}
             </button>
           </div>
         )}
 
         {/* ACTIONS VIEW */}
         {view === 'actions' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-              <h2 className="text-2xl font-bold text-gray-800">Action Items</h2>
+          <div className={`${cardClass} rounded-2xl shadow-2xl p-8`}>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+              <h2 className={`text-3xl font-bold ${textClass}`}>📋 Action Items</h2>
               <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setFilter('all')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                    filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  All ({actionItems.length})
-                </button>
-                <button
-                  onClick={() => setFilter('open')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                    filter === 'open' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Open ({actionItems.filter(i => !i.is_done).length})
-                </button>
-                <button
-                  onClick={() => setFilter('done')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                    filter === 'done' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Done ({actionItems.filter(i => i.is_done).length})
-                </button>
+                {[
+                  { key: 'all', label: 'All', count: actionItems.length },
+                  { key: 'open', label: 'Open', count: actionItems.filter(i => !i.is_done).length },
+                  { key: 'done', label: 'Done', count: actionItems.filter(i => i.is_done).length }
+                ].map(({ key, label, count }) => (
+                  <button
+                    key={key}
+                    onClick={() => setFilter(key)}
+                    className={`px-5 py-2 rounded-lg font-semibold transition-all ${
+                      filter === key
+                        ? darkMode
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-blue-600 text-white'
+                        : darkMode
+                        ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    {label} ({count})
+                  </button>
+                ))}
               </div>
             </div>
 
             <button
               onClick={addItem}
-              className="mb-4 px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all"
+              className={`mb-6 px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 ${
+                darkMode
+                  ? 'bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-500/30'
+                  : 'bg-green-600 hover:bg-green-700 text-white shadow-lg'
+              }`}
             >
               ➕ Add New Item
             </button>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {filteredItems.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">No action items found</p>
+                <p className={`${textMutedClass} text-center py-12 text-lg`}>No action items found</p>
               ) : (
                 filteredItems.map(item => (
                   <div
                     key={item.id}
-                    className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-300 transition-all"
+                    className={`flex flex-col md:flex-row items-start md:items-center gap-4 p-6 ${
+                      darkMode 
+                        ? 'bg-gray-700/30 border border-purple-500/20 hover:border-purple-500/50' 
+                        : 'bg-white/70 border-2 border-gray-200 hover:border-blue-300'
+                    } rounded-xl transition-all`}
                   >
                     <input
                       type="checkbox"
                       checked={item.is_done}
                       onChange={() => toggleDone(item.id, item.is_done)}
-                      className="w-6 h-6 mt-1 cursor-pointer"
+                      className="w-7 h-7 cursor-pointer accent-purple-600"
                     />
                     <div className="flex-1 min-w-0">
                       <p
-                        className={`font-medium mb-1 cursor-pointer ${
-                          item.is_done ? 'line-through text-gray-400' : 'text-gray-800'
+                        className={`text-lg font-semibold mb-2 cursor-pointer ${
+                          item.is_done 
+                            ? darkMode ? 'line-through text-gray-500' : 'line-through text-gray-400'
+                            : textClass
                         }`}
                         onClick={() => editItem(item.id, 'task', item.task)}
                       >
                         {item.task}
                       </p>
-                      <div className="flex flex-wrap gap-3 text-sm">
+                      <div className="flex flex-wrap gap-4 text-sm">
                         {item.owner && (
                           <span
-                            className="text-blue-600 cursor-pointer hover:underline"
+                            className="flex items-center gap-1 text-blue-400 cursor-pointer hover:underline"
                             onClick={() => editItem(item.id, 'owner', item.owner)}
                           >
                             👤 {item.owner}
@@ -347,7 +383,7 @@ export default function App() {
                         )}
                         {item.due_date && (
                           <span
-                            className="text-orange-600 cursor-pointer hover:underline"
+                            className="flex items-center gap-1 text-orange-400 cursor-pointer hover:underline"
                             onClick={() => editItem(item.id, 'due_date', item.due_date)}
                           >
                             📅 {item.due_date}
@@ -357,7 +393,7 @@ export default function App() {
                     </div>
                     <button
                       onClick={() => deleteItem(item.id)}
-                      className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-all"
+                      className="px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg font-semibold transition-all"
                     >
                       🗑️ Delete
                     </button>
@@ -370,26 +406,30 @@ export default function App() {
 
         {/* HISTORY VIEW */}
         {view === 'history' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Last 5 Transcripts</h2>
-            <div className="space-y-3">
+          <div className={`${cardClass} rounded-2xl shadow-2xl p-8`}>
+            <h2 className={`text-3xl font-bold ${textClass} mb-6`}>📚 Last 5 Transcripts</h2>
+            <div className="space-y-4">
               {history.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">No transcripts yet</p>
+                <p className={`${textMutedClass} text-center py-12 text-lg`}>No transcripts yet</p>
               ) : (
                 history.map(item => (
                   <div
                     key={item.id}
-                    className="p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all"
+                    className={`p-6 ${
+                      darkMode
+                        ? 'bg-gray-700/30 border border-purple-500/20 hover:border-purple-500/50 hover:bg-gray-700/50'
+                        : 'bg-white/70 border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50'
+                    } rounded-xl cursor-pointer transition-all`}
                     onClick={() => {
                       setCurrentTranscriptId(item.id);
                       loadActionItems(item.id);
                       setView('actions');
                     }}
                   >
-                    <p className="text-sm text-gray-500 mb-2">
+                    <p className={`text-sm ${textMutedClass} mb-3`}>
                       📅 {new Date(item.created_at).toLocaleString()}
                     </p>
-                    <p className="text-gray-700 truncate">{item.content.substring(0, 150)}...</p>
+                    <p className={textClass}>{item.content.substring(0, 200)}...</p>
                   </div>
                 ))
               )}
@@ -399,49 +439,41 @@ export default function App() {
 
         {/* STATUS VIEW */}
         {view === 'status' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">System Health Check</h2>
+          <div className={`${cardClass} rounded-2xl shadow-2xl p-8`}>
+            <h2 className={`text-3xl font-bold ${textClass} mb-6`}>💚 System Health</h2>
             {health ? (
-              <div className="space-y-3">
-                <div className="flex justify-between items-center p-4 border-2 border-gray-200 rounded-lg">
-                  <span className="font-semibold text-gray-700">⚙️ Backend Server</span>
-                  <span
-                    className={`px-4 py-2 rounded-lg font-semibold ${
-                      health.backend === 'healthy'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
+              <div className="space-y-4">
+                {[
+                  { icon: '⚙️', label: 'Backend Server', key: 'backend' },
+                  { icon: '🗄️', label: 'Database (Supabase)', key: 'database' },
+                  { icon: '🤖', label: 'AI API (Gemini)', key: 'llm' }
+                ].map(({ icon, label, key }) => (
+                  <div
+                    key={key}
+                    className={`flex justify-between items-center p-6 ${
+                      darkMode 
+                        ? 'bg-gray-700/30 border border-purple-500/20' 
+                        : 'bg-white/70 border-2 border-gray-200'
+                    } rounded-xl`}
                   >
-                    {health.backend}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center p-4 border-2 border-gray-200 rounded-lg">
-                  <span className="font-semibold text-gray-700">🗄️ Database (Supabase)</span>
-                  <span
-                    className={`px-4 py-2 rounded-lg font-semibold ${
-                      health.database === 'healthy'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
-                  >
-                    {health.database}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center p-4 border-2 border-gray-200 rounded-lg">
-                  <span className="font-semibold text-gray-700">🤖 LLM API (Claude)</span>
-                  <span
-                    className={`px-4 py-2 rounded-lg font-semibold ${
-                      health.llm === 'healthy'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
-                  >
-                    {health.llm}
-                  </span>
-                </div>
+                    <span className={`text-lg font-semibold ${textClass} flex items-center gap-2`}>
+                      <span className="text-2xl">{icon}</span>
+                      {label}
+                    </span>
+                    <span
+                      className={`px-6 py-3 rounded-lg font-bold text-lg ${
+                        health[key] === 'healthy'
+                          ? 'bg-green-500/20 text-green-400 border-2 border-green-500'
+                          : 'bg-red-500/20 text-red-400 border-2 border-red-500'
+                      }`}
+                    >
+                      {health[key] === 'healthy' ? '✓ Healthy' : '✗ Unhealthy'}
+                    </span>
+                  </div>
+                ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">Loading status...</p>
+              <p className={`${textMutedClass} text-center py-12 text-lg`}>Loading status...</p>
             )}
           </div>
         )}

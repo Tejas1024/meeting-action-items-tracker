@@ -19,21 +19,18 @@ export default async function handler(req, res) {
     checks.database = 'unhealthy';
   }
 
-  // Check LLM
+  // Check Gemini API
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-20250514',
-        max_tokens: 10,
-        messages: [{ role: 'user', content: 'test' }]
-      })
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: 'test' }] }]
+        })
+      }
+    );
     checks.llm = response.ok ? 'healthy' : 'unhealthy';
   } catch (e) {
     checks.llm = 'unhealthy';
