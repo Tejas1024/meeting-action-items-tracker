@@ -15,52 +15,52 @@ export default async function handler(req, res) {
     );
     const { error } = await supabase.from('transcripts').select('id').limit(1);
     checks.database = error ? 'unhealthy' : 'healthy';
+    
+    if (error) {
+      console.error('Database error:', error.message);
+    }
   } catch (e) {
-    console.error('Database health check error:', e.message);
+    console.error('Database check failed:', e.message);
     checks.database = 'unhealthy';
   }
 
-  // Check Gemini API with detailed error logging
+  // Check Gemini API
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     
     if (!apiKey) {
-      console.error('GEMINI_API_KEY environment variable is not set');
+      console.error('GEMINI_API_KEY not set');
       checks.llm = 'unhealthy';
       return res.status(200).json(checks);
     }
 
-    console.log('Testing Gemini API with key:', apiKey.substring(0, 10) + '...');
+    console.log('Testing Gemini API...');
     
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: [{ 
-            parts: [{ text: 'test' }] 
-          }],
-          generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 10
-          }
-        })
-      }
-    );
+    // CORRECT endpoint URL
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: [{ 
+          parts: [{ text: 'Hello' }] 
+        }]
+      })
+    });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Gemini API health check failed:', response.status, errorText);
-      checks.llm = 'unhealthy';
-    } else {
-      console.log('Gemini API health check passed');
+    if (response.ok) {
+      console.log('Gemini API: HEALTHY');
       checks.llm = 'healthy';
+    } else {
+      const errorText = await response.text();
+      console.error('Gemini API failed:', response.status, errorText);
+      checks.llm = 'unhealthy';
     }
   } catch (e) {
-    console.error('Gemini API health check exception:', e.message);
+    console.error('Gemini check error:', e.message);
     checks.llm = 'unhealthy';
   }
 
