@@ -14,39 +14,34 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'HTTP-Referer': 'https://meeting-action-items-tracker.vercel.app',
-        'X-Title': 'Meeting Tracker'
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-3.2-3b-instruct:free',
+        model: 'llama-3.3-70b-versatile',
         messages: [{
           role: 'user',
-          content: `Extract action items from meeting transcript. Return ONLY JSON array: [{"task":"...","owner":"...","due_date":"..."}]
+          content: `Extract action items from this meeting transcript. Return ONLY a JSON array, no other text:
+[{"task": "description", "owner": "name or null", "due_date": "date or null"}]
 
 Transcript:
 ${transcript}`
-        }]
+        }],
+        temperature: 0.1,
+        max_tokens: 1024
       })
     });
 
-    const responseText = await response.text();
-    
     if (!response.ok) {
-      console.error('API error:', responseText);
-      return res.status(500).json({ error: 'API failed', details: responseText.substring(0, 200) });
+      const errorText = await response.text();
+      console.error('Groq API error:', errorText);
+      return res.status(500).json({ error: 'API failed' });
     }
 
-    const data = JSON.parse(responseText);
-    
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      return res.status(200).json({ actionItems: [] });
-    }
-
+    const data = await response.json();
     let text = data.choices[0].message.content.trim()
       .replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
 

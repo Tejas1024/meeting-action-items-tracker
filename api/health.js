@@ -19,11 +19,11 @@ export default async function handler(req, res) {
     checks.database = 'unhealthy';
   }
 
-  // Check OpenRouter API
+  // Check Groq
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/models', {
+    const response = await fetch('https://api.groq.com/openai/v1/models', {
       headers: {
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       }
     });
     checks.llm = response.ok ? 'healthy' : 'unhealthy';

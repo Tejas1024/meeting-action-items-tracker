@@ -446,7 +446,7 @@ export default function App() {
                 {[
                   { icon: '⚙️', label: 'Backend Server', key: 'backend' },
                   { icon: '🗄️', label: 'Database (Supabase)', key: 'database' },
-                  { icon: '🤖', label: 'AI API (OpenRouter)', key: 'llm' }
+                  { icon: '🤖', label: 'AI API (Groq)', key: 'llm' }
                 ].map(({ icon, label, key }) => (
                   <div
                     key={key}
