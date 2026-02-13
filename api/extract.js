@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const { transcript } = req.body;
   if (!transcript || transcript.trim().length < 10) {
-    return res.status(400).json({ error: 'Transcript must be at least 10 characters' });
+    return res.status(400).json({ error: 'Transcript too short' });
   }
 
   try {
@@ -17,25 +17,41 @@ export default async function handler(req, res) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'HTTP-Referer': 'https://meeting-tracker.vercel.app',
+        'X-Title': 'Meeting Tracker'
       },
       body: JSON.stringify({
-        model: 'google/gemini-flash-1.5',
+        model: 'google/gemini-flash-1.5-8b',
         messages: [{
           role: 'user',
-          content: `Extract action items from this meeting transcript. Return ONLY a JSON array: [{"task": "...", "owner": "...", "due_date": "..."}]. No markdown, no explanation.\n\nTranscript:\n${transcript}`
+          content: `Extract action items from this transcript. Return ONLY a JSON array, no markdown:\n[{"task":"...", "owner":"...", "due_date":"..."}]\n\nTranscript:\n${transcript}`
         }]
       })
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenRouter error:', errorText);
+      throw new Error('API request failed');
+    }
+
     const data = await response.json();
-    const text = data.choices[0].message.content.trim()
-      .replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+    
+    // OpenRouter returns: data.choices[0].message.content
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid response structure:', JSON.stringify(data));
+      return res.status(200).json({ actionItems: [] });
+    }
+
+    let text = data.choices[0].message.content.trim();
+    text = text.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
     
     const jsonMatch = text.match(/\[[\s\S]*\]/);
     const actionItems = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
 
     res.status(200).json({ actionItems });
   } catch (error) {
-    res.status(500).json({ error: 'Extraction failed: ' + error.message });
+    console.error('Extract error:', error);
+    res.status(500).json({ error: error.message });
   }
 }
