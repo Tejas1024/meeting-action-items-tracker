@@ -7,7 +7,7 @@
 **Usage:** Generated initial project structure commands
 **What I checked:** Verified correct dependencies installed, folder structure makes sense
 
-### 2. Database Schema Design (20%)
+### 2. Database Schema Design (20%) 
 **Tool:** Claude
 **Usage:** Created Supabase table schema with proper foreign keys and indexes
 **What I checked:** 
