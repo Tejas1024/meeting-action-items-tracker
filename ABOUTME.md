@@ -165,7 +165,7 @@ Full-stack RAG-inspired AI platform with Python/Streamlit frontend, SQLite backe
 
 This project showcases my ability to:
 
-1. **Rapidly integrate AI capabilities** - Integrated Claude API with production-ready implementation
+1. **Rapidly integrate AI capabilities** - Integrated GROQ_API with production-ready implementation
 2. **Build full-stack applications** - React frontend, Node.js serverless backend, PostgreSQL database
 3. **Deploy scalable solutions** - Vercel serverless architecture with proper environment management
 4. **Create intuitive UIs** - Responsive design with click-to-edit functionality and status monitoring

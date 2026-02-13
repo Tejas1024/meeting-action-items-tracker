@@ -1,6 +1,6 @@
 # Meeting Action Items Tracker
 
-🔗 **Live App:**  https://meeting-action-items-tracker.vercel.app?_vercel_share=C5i1sMMHv3SqSTE1O1MyEfNIQAdJ80gx
+🔗 **Live App:**  https://meeting-action-items-tracker.vercel.app?_vercel_share=ltETlFAh6IB05matnPjhXo2eQxjZy0KQ
 
 
 🔗 **GitHub:** https://github.com/Tejas1024
@@ -12,7 +12,7 @@ AI-powered web application that automatically extracts action items from meeting
 - **Frontend:** React 18 + Vite + Tailwind CSS
 - **Backend:** Vercel Serverless Functions (Node.js)
 - **Database:** Supabase (PostgreSQL)
-- **AI/LLM:** Anthropic Claude API (Haiku model)
+- **AI/LLM:** Groq API
 - **Hosting:** Vercel
 
 ## Features Implemented ✅
@@ -95,7 +95,7 @@ npm install
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-ANTHROPIC_API_KEY=your_anthropic_api_key
+GROQ_API_KEY=your_api_key
 ```
 
 4. Set up Supabase tables (run in Supabase SQL Editor)
@@ -143,7 +143,7 @@ meeting-tracker/
 ## Environment Variables
 - `VITE_SUPABASE_URL` - Supabase project URL
 - `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
-- `ANTHROPIC_API_KEY` - Anthropic Claude API key (keep secret!)
+- GROQ_API_KEY  - GROQ_API API key (keep secret!)
 
 ## API Routes
 
