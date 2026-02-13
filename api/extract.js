@@ -14,28 +14,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Use OpenRouter with Gemini
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'HTTP-Referer': 'https://meeting-action-items-tracker.vercel.app',
-        'X-Title': 'Meeting Action Items Tracker'
+        'X-Title': 'Meeting Tracker'
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-exp:free',
+        model: 'meta-llama/llama-3.2-3b-instruct:free',
         messages: [{
           role: 'user',
-          content: `You are an AI that extracts action items from meeting transcripts.
+          content: `Extract action items from meeting transcript. Return ONLY JSON array: [{"task":"...","owner":"...","due_date":"..."}]
 
-Extract all action items and return ONLY a valid JSON array. No markdown, no code blocks, no explanation.
-
-Format: [{"task": "description", "owner": "name or null", "due_date": "date or null"}]
-
-If no action items, return: []
-
-Meeting Transcript:
+Transcript:
 ${transcript}`
         }]
       })
@@ -44,64 +37,26 @@ ${transcript}`
     const responseText = await response.text();
     
     if (!response.ok) {
-      console.error('OpenRouter API error:', response.status, responseText);
-      return res.status(500).json({ 
-        error: 'API request failed',
-        details: responseText.substring(0, 200)
-      });
+      console.error('API error:', responseText);
+      return res.status(500).json({ error: 'API failed', details: responseText.substring(0, 200) });
     }
 
-    let data;
-    try {
-      data = JSON.parse(responseText);
-    } catch (e) {
-      console.error('Failed to parse response:', responseText);
-      return res.status(500).json({ error: 'Invalid API response' });
-    }
-
-    // Extract the message content
-    let text = '';
+    const data = JSON.parse(responseText);
     
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      text = data.choices[0].message.content;
-    } else if (data.error) {
-      console.error('API returned error:', data.error);
-      return res.status(500).json({ error: data.error.message || 'API error' });
-    } else {
-      console.error('Unexpected response structure:', JSON.stringify(data).substring(0, 200));
-      return res.status(500).json({ error: 'Unexpected response format' });
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      return res.status(200).json({ actionItems: [] });
     }
 
-    // Clean the response
-    text = text.trim()
-      .replace(/```json\n?/gi, '')
-      .replace(/```\n?/g, '')
-      .trim();
+    let text = data.choices[0].message.content.trim()
+      .replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
 
-    // Extract JSON array
     const jsonMatch = text.match(/\[[\s\S]*\]/);
-    
-    if (!jsonMatch) {
-      console.log('No JSON array found in response:', text.substring(0, 200));
-      // Return empty array instead of error
-      return res.status(200).json({ actionItems: [] });
-    }
-
-    let actionItems;
-    try {
-      actionItems = JSON.parse(jsonMatch[0]);
-    } catch (e) {
-      console.error('Failed to parse extracted JSON:', jsonMatch[0]);
-      return res.status(200).json({ actionItems: [] });
-    }
+    const actionItems = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
 
     return res.status(200).json({ actionItems });
 
   } catch (error) {
-    console.error('Fatal error in extract:', error);
-    return res.status(500).json({ 
-      error: 'Extraction failed',
-      details: error.message 
-    });
+    console.error('Error:', error);
+    return res.status(500).json({ error: error.message });
   }
 }
